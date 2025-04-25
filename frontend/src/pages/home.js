@@ -1,21 +1,27 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Donate from './pages/Donate';
-import AuctionRoom from './pages/AuctionRoom';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-function App() {
+const Home = () => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/items')
+      .then((res) => res.json())
+      .then((data) => setItems(data));
+  }, []);
+
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/donate" element={<Donate />} />
-        <Route path="/auction/:id" element={<AuctionRoom />} />
-      </Routes>
-    </Router>
+    <div>
+      <h1>Active Auctions</h1>
+      <ul>
+        {items.map((item) => (
+          <li key={item._id}>
+            <Link to={`/auction/${item._id}`}>{item.title}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
 
-export default App;
+export default Home;
